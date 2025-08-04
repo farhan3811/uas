@@ -8,14 +8,15 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
+  id        Int        @id @default(autoincrement())
   name      String
-  email     String   @unique
+  email     String     @unique
   password  String
-  role      Role     @default(USER)
-  createdAt DateTime @default(now())
+  role      Role       @default(USER)
+  createdAt DateTime   @default(now())
 
-  materials Material[]
+  materials Material[] // Relasi ke Material
+  comments  Comment[]  // Relasi ke Comment
 }
 
 enum Role {
@@ -24,14 +25,30 @@ enum Role {
 }
 
 model Material {
-  id          Int      @id @default(autoincrement())
+  id          Int        @id @default(autoincrement())
   title       String
-description String @db.Text
+  description String     @db.Text
   flyerUrl    String
   fileUrl     String
   fileType    String
-  approved    Boolean  @default(false)
+  approved    Boolean    @default(false)
   authorId    Int
-  author      User     @relation(fields: [authorId], references: [id])
-  createdAt   DateTime @default(now())
+  author      User       @relation(fields: [authorId], references: [id])
+  createdAt   DateTime   @default(now())
+
+  comments    Comment[]  // Relasi ke Comment
+}
+
+model Comment {
+  id         Int       @id @default(autoincrement())
+  content    String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  authorId   Int
+  author     User      @relation(fields: [authorId], references: [id])
+  materialId Int
+  material   Material  @relation(fields: [materialId], references: [id])
+  parentId   Int?
+  parent     Comment?  @relation("ReplyTo", fields: [parentId], references: [id])
+  replies    Comment[] @relation("ReplyTo")
 }

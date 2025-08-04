@@ -1,6 +1,8 @@
 import { prisma } from '@/lib/prisma';
 import { getUserFromCookie } from '@/lib/auth';
 import { redirect } from 'next/navigation';
+import CommentSection from '@/components/CommentSection';
+
 
 interface Props {
   params: { id: string };
@@ -33,6 +35,7 @@ export default async function MaterialDetailPage({ params }: Props) {
       <a href={material.fileUrl} target="_blank" className="text-blue-600 underline">
         Buka File Materi
       </a>
+      <CommentSection materialId={material.id} />
     </div>
   );
 }
